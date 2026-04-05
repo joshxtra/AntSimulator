@@ -4,5 +4,7 @@
 1080
 # Window mode 0 -> Windowed, 1 -> Fullscreen
 0
+# UI Scale
+1.0
 # Maximum ants count per colony
 4000

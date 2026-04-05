@@ -3,6 +3,7 @@ build/
 cmake-*/
 .vscode
 .clangd
+.cache
 compile_commands.json
 .DS_Store
 demo*/

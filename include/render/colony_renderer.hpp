@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "simulation/config.hpp"
+#include "utils.hpp"
 #include "simulation/colony/colony.hpp"
 #include "common/circular_gauge.hpp"
 
@@ -26,7 +27,7 @@ struct PopulationChart
 		: population(800, sf::Vector2f(800.0f, 100.0f), sf::Vector2f())
 		, population_update(3.0f)
 	{
-		font.loadFromFile("res/font.ttf");
+		font.loadFromFile(getResourcePath() + "res/font.ttf");
 		text.setFont(font);
 	}
 
@@ -102,7 +103,7 @@ struct ColonyRenderer
 		, ants_food_va(sf::Quads, 4 * Conf::ANTS_COUNT)
 		, colony_ref(colony)
 	{
-		font.loadFromFile("res/font.ttf");
+		font.loadFromFile(getResourcePath() + "res/font.ttf");
 		text.setFont(font);
 
         initializeAntsVA();

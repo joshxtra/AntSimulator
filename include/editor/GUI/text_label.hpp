@@ -1,5 +1,6 @@
 #pragma once
 #include "editor/GUI/item.hpp"
+#include "utils.hpp"
 
 
 namespace GUI
@@ -22,7 +23,7 @@ struct TextLabel : public Item
         , alignment(Alignment::Center)
     {
         padding = 1.0f;
-        font.loadFromFile("res/font.ttf");
+        font.loadFromFile(getResourcePath() + "res/font.ttf");
         text.setFont(font);
         text.setCharacterSize(char_size);
         setColor({100, 100, 100});

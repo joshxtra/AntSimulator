@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include "utils.hpp"
 
 
 template<typename T>
@@ -31,10 +32,11 @@ struct DefaultConf
 	static void loadTextures()
 	{
 		DefaultConf::ANT_TEXTURE = std::make_shared<sf::Texture>();
-		DefaultConf::ANT_TEXTURE->loadFromFile("res/ant.png");
+		const std::string rp = getResourcePath();
+		DefaultConf::ANT_TEXTURE->loadFromFile(rp + "res/ant.png");
 		DefaultConf::ANT_TEXTURE->setSmooth(true);
 		DefaultConf::MARKER_TEXTURE = std::make_shared<sf::Texture>();
-		DefaultConf::MARKER_TEXTURE->loadFromFile("res/marker.png");
+		DefaultConf::MARKER_TEXTURE->loadFromFile(rp + "res/marker.png");
 		DefaultConf::MARKER_TEXTURE->setSmooth(true);
 	}
 
@@ -46,7 +48,9 @@ struct DefaultConf
     
     static bool loadUserConf()
     {
-        std::ifstream conf_file("conf.txt");
+        const std::string conf_path = getConfPath();
+        if (conf_path.empty()) { return false; }
+        std::ifstream conf_file(conf_path);
         if (conf_file) {
             std::string line;
             uint32_t line_count = 0;

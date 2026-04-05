@@ -38,6 +38,33 @@ docker rm -f dummy
 ```
 Executable files will be located in the build folder.
 
+### On macOS
+
+- Install dependencies via [Homebrew](https://brew.sh/)
+
+```sh
+brew install sfml@2 cmake
+brew link --force sfml@2
+```
+
+- Build
+
+```sh
+mkdir build && cd build
+cmake ..
+make
+```
+
+This produces `build/AntSimulator.app`, a self-contained bundle with SFML embedded.
+
+- Run
+
+```sh
+open AntSimulator.app
+```
+
+A `conf.txt` will be created automatically inside the `.app` on first launch. You can find and edit it at `AntSimulator.app/Contents/MacOS/conf.txt`.
+
 ### On Windows with CMake GUI and Visual Studio
  - Install the right SFML version or compile it (see [this](https://www.sfml-dev.org/tutorials/2.5/start-vc.php))
  - Run CMake

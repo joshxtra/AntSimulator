@@ -4,6 +4,7 @@
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
+#include <mach-o/dyld.h>
 #endif
 
 // Returns the base path for resources (with trailing slash).
@@ -26,40 +27,26 @@ inline std::string getResourcePath()
     return "";
 }
 
-// Returns the path to conf.txt, checking in order:
-//   1. Next to the .app bundle (or CWD for non-bundle builds)
-//   2. ~/Library/Application Support/AntSimulator/ (macOS bundle)
-// Returns empty string if not found.
-inline std::string getConfPath()
+// Returns the directory containing the executable (with trailing slash).
+inline std::string getExeDir()
 {
 #ifdef __APPLE__
-    CFBundleRef bundle = CFBundleGetMainBundle();
-    if (bundle) {
-        // Check next to the .app bundle
-        CFURLRef bundleURL = CFBundleCopyBundleURL(bundle);
-        CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, bundleURL);
-        CFRelease(bundleURL);
-        char parentPath[PATH_MAX];
-        if (CFURLGetFileSystemRepresentation(parentURL, TRUE, (UInt8*)parentPath, PATH_MAX)) {
-            std::string candidate = std::string(parentPath) + "/conf.txt";
-            if (std::ifstream(candidate)) {
-                CFRelease(parentURL);
-                return candidate;
-            }
+    char exe_path[PATH_MAX];
+    uint32_t size = sizeof(exe_path);
+    if (_NSGetExecutablePath(exe_path, &size) == 0) {
+        std::string exe(exe_path);
+        auto pos = exe.rfind('/');
+        if (pos != std::string::npos) {
+            return exe.substr(0, pos + 1);
         }
-        CFRelease(parentURL);
-
-        // Fall back to ~/Library/Application Support/AntSimulator/conf.txt
-        const char* home = getenv("HOME");
-        if (home) {
-            std::string candidate = std::string(home) + "/Library/Application Support/AntSimulator/conf.txt";
-            if (std::ifstream(candidate)) {
-                return candidate;
-            }
-        }
-        return "";
     }
 #endif
-    // Non-bundle: use CWD
-    return "conf.txt";
+    return "";
+}
+
+// Returns the path to conf.txt next to the executable.
+// If the file exists it can be read; if not, this is also the write path.
+inline std::string getConfPath()
+{
+    return getExeDir() + "conf.txt";
 }

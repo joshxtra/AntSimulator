@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "utils.hpp"
 
@@ -49,7 +50,6 @@ struct DefaultConf
     static bool loadUserConf()
     {
         const std::string conf_path = getConfPath();
-        if (conf_path.empty()) { return false; }
         std::ifstream conf_file(conf_path);
         if (conf_file) {
             std::string line;
@@ -81,6 +81,20 @@ struct DefaultConf
                 ++line_count;
             }
         } else {
+            // No conf found — write one with defaults next to the app
+            const std::string write_path = getConfPath();
+            std::cout << "No conf.txt found, writing defaults to: " << write_path << std::endl;
+            std::ofstream out(write_path);
+            if (out) {
+                out << "# Window width\n" << DefaultConf<T>::WIN_WIDTH << "\n"
+                    << "# Window height\n" << DefaultConf<T>::WIN_HEIGHT << "\n"
+                    << "# Window mode 0 -> Windowed, 1 -> Fullscreen\n" << DefaultConf<T>::USE_FULLSCREEN << "\n"
+                    << "# GUI scale\n" << DefaultConf<T>::GUI_SCALE << "\n"
+                    << "# Maximum ants count per colony\n" << DefaultConf<T>::ANTS_COUNT << "\n";
+                std::cout << "Created default configuration file: " << write_path << std::endl;
+            } else {
+                std::cout << "Failed to write conf.txt to: " << write_path << std::endl;
+            }
             return false;
         }
         return true;
